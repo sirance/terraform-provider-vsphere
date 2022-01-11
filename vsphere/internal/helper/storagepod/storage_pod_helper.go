@@ -390,7 +390,8 @@ func recommendSDRS(client *govmomi.Client, sps types.StoragePlacementSpec, timeo
 }
 
 func applySDRS(client *govmomi.Client, placement *types.StoragePlacementResult, timeout time.Duration) (*object.VirtualMachine, error) {
-	log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q)", placement.Recommendations[0].Type)
+	// log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q)", placement.Recommendations[0].Type)
+	log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q, timeout %d)", placement.Recommendations[0].Type, timeout)
 	srm := object.NewStorageResourceManager(client.Client)
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
