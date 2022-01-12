@@ -145,6 +145,12 @@ func resourceVSphereVirtualMachine() *schema.Resource {
 				},
 			},
 		},
+		"reconfigure_timeout": {
+			Type:        schema.TypeInt,
+			Optional:    true,
+			Default:     5,
+			Description: "The amount of time, in minutes, to wait for reconfigure when making necessary updates to the virtual machine.",
+		},
 		"shutdown_wait_timeout": {
 			Type:         schema.TypeInt,
 			Optional:     true,
@@ -825,8 +831,8 @@ func resourceVSphereVirtualMachineUpdateReconfigureWithSDRS(
 	if err != nil {
 		return fmt.Errorf("error getting datastore cluster: %s", err)
 	}
-
-	err = storagepod.ReconfigureVM(client, vm, spec, pod)
+	timeout := d.Get("reconfigure_timeout").(int)
+	err = storagepod.ReconfigureVM(client, vm, spec, timeout, pod)
 	if err != nil {
 		return fmt.Errorf("error reconfiguring VM on datastore cluster %q: %s", pod.Name(), err)
 	}

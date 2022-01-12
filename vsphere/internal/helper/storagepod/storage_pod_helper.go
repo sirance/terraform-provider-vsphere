@@ -295,6 +295,7 @@ func ReconfigureVM(
 	client *govmomi.Client,
 	vm *object.VirtualMachine,
 	spec types.VirtualMachineConfigSpec,
+	timeout int,
 	pod *object.StoragePod,
 ) error {
 	sdrsEnabled, err := StorageDRSEnabled(pod)
@@ -320,7 +321,7 @@ func ReconfigureVM(
 		ConfigSpec: &spec,
 	}
 
-	_, err = recommendAndApplySDRS(client, sps, provider.DefaultAPITimeout)
+	_, err = recommendAndApplySDRS(client, sps, time.Minute*time.Duration(timeout))
 	return err
 }
 
@@ -390,8 +391,7 @@ func recommendSDRS(client *govmomi.Client, sps types.StoragePlacementSpec, timeo
 }
 
 func applySDRS(client *govmomi.Client, placement *types.StoragePlacementResult, timeout time.Duration) (*object.VirtualMachine, error) {
-	// log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q)", placement.Recommendations[0].Type)
-	log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q, timeout %d)", placement.Recommendations[0].Type, timeout)
+	log.Printf("[DEBUG] Applying Storage DRS recommendations (type: %q)", placement.Recommendations[0].Type)
 	srm := object.NewStorageResourceManager(client.Client)
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
