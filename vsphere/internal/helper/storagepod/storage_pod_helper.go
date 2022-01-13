@@ -295,6 +295,7 @@ func ReconfigureVM(
 	client *govmomi.Client,
 	vm *object.VirtualMachine,
 	spec types.VirtualMachineConfigSpec,
+	timeout int,
 	pod *object.StoragePod,
 ) error {
 	sdrsEnabled, err := StorageDRSEnabled(pod)
@@ -320,7 +321,7 @@ func ReconfigureVM(
 		ConfigSpec: &spec,
 	}
 
-	_, err = recommendAndApplySDRS(client, sps, provider.DefaultAPITimeout)
+	_, err = recommendAndApplySDRS(client, sps, time.Minute*time.Duration(timeout))
 	return err
 }
 
