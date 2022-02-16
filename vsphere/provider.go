@@ -69,7 +69,7 @@ func Provider() *schema.Provider {
 			"persist_session": {
 				Type:        schema.TypeBool,
 				Optional:    true,
-				DefaultFunc: schema.EnvDefaultFunc("VSPHERE_PERSIST_SESSION", false),
+				DefaultFunc: schema.EnvDefaultFunc("VSPHERE_PERSIST_SESSION", true),
 				Description: "Persist vSphere client sessions to disk",
 			},
 			"vim_session_path": {
